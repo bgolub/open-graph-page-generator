@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block head %}
+  {% if page and page.head %}
+    {{ page.head }}
+  {% endif %}
+{% endblock %}
+
+{% block body %}
+  <iframe src="http://www.facebook.com/plugins/like.php?href={{ request.uri|urlencode }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:850px; height:80px;" allowTransparency="true"></iframe>
+  {% if page and page.head %}
+    <p>
+      {{ page.head|escape }}
+    </p>
+  {% endif %}
+  {% if user and user_admin %}
+    <form method="post">
+      {% if page %}
+        <input type="hidden" name="key" value="{{ page.key }}"/>
+      {% endif %}
+      <p>
+        <h4>Path</h4>
+        <input class="text" type="text" disabled="disabled" name="path" value="{{ path }}"/>
+      </p>
+      <p>
+        <h4>Headers</h4>
+        <textarea name="head">{% if page and page.head %}{{ page.head|escape }}{% endif %}</textarea>
+      </p>
+      <p>
+        <input class="submit" type="submit" value="Save"/>
+      </p>
+    </form>
+  {% endif %}
+  <p>
+    {% if not user %}
+      <a href="{{ login_uri }}">Log in</a>
+    {% else %}
+      <a href="{{ logout_uri }}">Log out</a>
+    {% endif %}
+  </p>
+{% endblock %}

@@ -1,0 +1,14 @@
+body {
+  margin: 0 auto;
+  padding: 25px;
+  width: 600px;
+}
+
+input .text,
+textarea {
+  width: 100%;
+}
+
+textarea {
+  height: 200px;
+}
