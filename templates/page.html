@@ -10,7 +10,7 @@
   <iframe src="http://www.facebook.com/plugins/like.php?href={{ request.uri|urlencode }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:850px; height:80px;" allowTransparency="true"></iframe>
   {% if page and page.head %}
     <p>
-      {{ page.head|escape }}
+      {{ page.head|escape|linebreaks }}
     </p>
   {% endif %}
   {% if user and user_admin %}
