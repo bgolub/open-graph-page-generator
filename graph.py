@@ -1,4 +1,3 @@
-import logging
 import os
 import wsgiref.handlers
 
@@ -35,6 +34,10 @@ class OpenGraphPageHandler(webapp.RequestHandler):
         self.redirect(path)
 
     def get(self, path):
+        if path.endswith("/") and not path == "/":
+            self.redirect(path[:-1], permanent=True)
+            return
+
         extra_context = {
             "page": db.Query(OpenGraphPage).filter("path =", path).get(),
             "path": path,
