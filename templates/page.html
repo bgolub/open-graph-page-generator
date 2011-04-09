@@ -27,7 +27,7 @@
         <h4>Headers</h4>
         <textarea name="head">
           {% if page and page.head %}
-            {{ page.head }}
+            {{ escape(page.head) }}
           {% end %}
         </textarea>
       </p>
