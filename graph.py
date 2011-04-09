@@ -8,9 +8,9 @@ from google.appengine.api import users
 
 class OpenGraphPage(db.Model):
     created = db.DateTimeProperty(auto_now_add=True)
+    creator = db.UserProperty(auto_current_user_add=True)
     head = db.TextProperty()
     path = db.StringProperty(required=True)
-    creator = db.UserProperty(auto_current_user_add=True)
     updated = db.DateTimeProperty(auto_now=True)
 
 
