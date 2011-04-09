@@ -46,6 +46,7 @@ class OpenGraphPageHandler(tornado.web.RequestHandler):
 
 settings = {
     "debug": os.environ.get("SERVER_SOFTWARE", "").startswith("Development/"),
+    "fb_app_id": 165333213522232,
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
     "xsrf_cookies": True,
 }

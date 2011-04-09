@@ -1,15 +1,13 @@
 <html>
   <head>
     <link rel="stylesheet" href="/static/css/base.css" type="text/css"/>
-    <meta property="fb:app_id" content="165333213522232"/>
+    <meta property="fb:app_id" content="{{ handler.settings.get("fb_app_id", "") }}"/>
     {% block head %}{% end %}
   </head>
   <body>
     {% block body %}{% end %}
     <p>
       <a href="http://developers.facebook.com/docs/opengraph/">Open Graph protocol</a>
-      -
-      <a href="http://www.facebook.com/bgolub">Benjamin Golub</a>
     </p>
   </body>
 </html>
