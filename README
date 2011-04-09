@@ -1,5 +1,5 @@
 1) Change app.yaml to point to your App Engine identifier.
-2) Change graph.py "fb_app_id" in the settings dict to point to your Facebook Facebook.
+2) Change graph.py "fb_app_id" in the settings dict to point to your Facebook app.
 3) Deploy!
 4) Visit any URL on your domain. If you are logged in you'll see a form to edit the metadata. WARNING: anything you save is emitted without being escaped in the <head> section of the page. 
 5) Like or lint (https://developers.facebook.com/tools/lint) the page.
