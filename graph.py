@@ -1,10 +1,9 @@
 import os
+import tornado.web
+import tornado.wsgi
 import wsgiref.handlers
 
-from google.appengine.ext import webapp
 from google.appengine.ext import db
-from google.appengine.ext.webapp import template
-from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import users
 
 class OpenGraphPage(db.Model):
@@ -12,13 +11,12 @@ class OpenGraphPage(db.Model):
     path = db.StringProperty(required=True)
 
 
-class OpenGraphPageHandler(webapp.RequestHandler):
+class OpenGraphPageHandler(tornado.web.RequestHandler):
     def post(self, path):
         if not users.is_current_user_admin():
-            self.error(403)
-            return
+            raise tornado.web.HTTPError(403)
 
-        key = self.request.get("key", None)
+        key = self.get_argument("key", None)
         if key:
             try:
                 page = OpenGraphPage.get(key)
@@ -28,39 +26,33 @@ class OpenGraphPageHandler(webapp.RequestHandler):
         else:
             page = OpenGraphPage(path=path)
 
-        page.head = self.request.get("head")
+        page.head = self.get_argument("head", "").strip()
         page.put()
       
         self.redirect(path)
 
+    @tornado.web.removeslash
     def get(self, path):
-        if path.endswith("/") and not path == "/":
-            self.redirect(path[:-1], permanent=True)
-            return
-
-        extra_context = {
+        kwargs = {
             "page": db.Query(OpenGraphPage).filter("path =", path).get(),
             "path": path,
-            "login_uri": users.create_login_url(self.request.uri),
-            "logout_uri": users.create_logout_url(self.request.uri),
-            "request": self.request,
-            "user": users.get_current_user(),
-            "user_admin": users.is_current_user_admin(),
+            "users": users,
         }
-        path = os.path.join(os.path.dirname(__file__), "templates/page.html")
-        self.response.out.write(template.render(path, extra_context))
+        self.render("page.html", **kwargs)
 
 
 settings = {
     "debug": os.environ.get("SERVER_SOFTWARE", "").startswith("Development/"),
+    "template_path": os.path.join(os.path.dirname(__file__), "templates"),
+    "xsrf_cookies": True,
 }
 
-application = webapp.WSGIApplication([
-  ("(/[\w\/-]*)/?", OpenGraphPageHandler), 
+application = tornado.wsgi.WSGIApplication([
+    (r"(/[\w\/-]*)/?", OpenGraphPageHandler), 
 ], **settings)
 
 def main():
-    run_wsgi_app(application)
+    wsgiref.handlers.CGIHandler().run(application)
 
 if __name__ == "__main__":
     main()

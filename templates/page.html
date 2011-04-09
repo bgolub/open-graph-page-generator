@@ -1,41 +1,46 @@
-{% extends "base.html" %}
+{% extends base.html %}
 
 {% block head %}
   {% if page and page.head %}
     {{ page.head }}
-  {% endif %}
-{% endblock %}
+  {% end %}
+{% end %}
 
 {% block body %}
-  <iframe src="http://www.facebook.com/plugins/like.php?href={{ request.uri|urlencode }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:850px; height:80px;" allowTransparency="true"></iframe>
+  <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape(request.full_url()) }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:850px; height:80px;" allowTransparency="true"></iframe>
   {% if page and page.head %}
     <p>
-      {{ page.head|escape|linebreaksbr }}
+      {{ escape(page.head) }}
     </p>
-  {% endif %}
-  {% if user and user_admin %}
+  {% end %}
+  {% if users.is_current_user_admin() %}
     <form method="post">
+      {{ xsrf_form_html() }}
       {% if page %}
-        <input type="hidden" name="key" value="{{ page.key }}"/>
-      {% endif %}
+        <input type="hidden" name="key" value="{{ page.key() }}"/>
+      {% end %}
       <p>
         <h4>Path</h4>
         <input class="text" type="text" disabled="disabled" name="path" value="{{ path }}"/>
       </p>
       <p>
         <h4>Headers</h4>
-        <textarea name="head">{% if page and page.head %}{{ page.head|escape }}{% endif %}</textarea>
+        <textarea name="head">
+          {% if page and page.head %}
+            {{ page.head }}
+          {% end %}
+        </textarea>
       </p>
       <p>
         <input class="submit" type="submit" value="Save"/>
       </p>
     </form>
-  {% endif %}
+  {% end %}
   <p>
-    {% if not user %}
-      <a href="{{ login_uri }}">Log in</a>
+    {% if not users.get_current_user() %}
+      <a href="{{ users.create_login_url(request.uri) }}">Log in</a>
     {% else %}
-      <a href="{{ logout_uri }}">Log out</a>
-    {% endif %}
+      <a href="{{ users.create_logout_url(request.uri) }}">Log out</a>
+    {% end %}
   </p>
-{% endblock %}
+{% end %}
