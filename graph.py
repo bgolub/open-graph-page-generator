@@ -44,10 +44,19 @@ class OpenGraphPageHandler(tornado.web.RequestHandler):
         self.render("page.html", **kwargs)
 
 
+class RecentlyEditedPagesModule(tornado.web.UIModule):
+    def render(self, limit=5):
+        pages = db.Query(OpenGraphPage).order("-updated").fetch(limit=limit)
+        return self.render_string("modules/recentlyedited.html", pages=pages)
+
+
 settings = {
     "debug": os.environ.get("SERVER_SOFTWARE", "").startswith("Development/"),
     "fb_app_id": 165333213522232,
     "template_path": os.path.join(os.path.dirname(__file__), "templates"),
+    "ui_modules": {
+        "RecentlyEditedPages": RecentlyEditedPagesModule,
+    },
     "xsrf_cookies": True,
 }
 
