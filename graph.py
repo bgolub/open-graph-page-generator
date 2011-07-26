@@ -14,6 +14,19 @@ class OpenGraphPage(db.Model):
     updated = db.DateTimeProperty(auto_now=True)
 
 
+class ArchiveHandler(tornado.web.RequestHandler):
+    def get(self):
+        q = db.Query(OpenGraphPage).order("-updated")
+        cursor = self.get_argument("cursor", None)
+        if cursor:
+            try:
+                q.with_cursor(cursor)
+            except (db.BadRequestError, db.BadValueError):
+                cursor = None
+        pages = q.fetch(limit=10)
+        self.render("archive.html", pages=pages, cursor=q.cursor(), users=users)
+
+
 class OpenGraphPageHandler(tornado.web.RequestHandler):
     def post(self, path):
         if not users.is_current_user_admin():
@@ -61,6 +74,7 @@ settings = {
 }
 
 application = tornado.wsgi.WSGIApplication([
+    (r"/archive/?", ArchiveHandler),
     (r"(/[\w\/-]*)/?", OpenGraphPageHandler), 
 ], **settings)
 

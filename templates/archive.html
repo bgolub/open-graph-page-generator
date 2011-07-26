@@ -1,0 +1,16 @@
+{% extends base.html %}
+
+{% block body %}
+  <ul>
+    {% for page in pages %}
+      <li>
+        <a href="{{ page.path }}">{{ page.path }}</a>
+      </li>
+    {% end %}
+  </ul>
+  {% if pages %}
+    <div>
+      <a href="{{ request.path + "?cursor=" + url_escape(cursor) }}">{{ _("Previous") }}</a>
+    </div>
+  {% end %}
+{% end %}

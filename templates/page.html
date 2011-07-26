@@ -2,7 +2,7 @@
 
 {% block head %}
   {% if page and page.head %}
-    {{ page.head }}
+    {% raw page.head %}
   {% end %}
 {% end %}
 
@@ -10,12 +10,12 @@
   <iframe src="http://www.facebook.com/plugins/like.php?href={{ url_escape(request.full_url()) }}" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:850px; height:80px;" allowTransparency="true"></iframe>
   {% if page and page.head %}
     <p>
-      {{ escape(page.head).replace("\n", "<br/>") }}
+      {% raw escape(page.head).replace("\n", "<br/>") %}
     </p>
   {% end %}
   {% if users.is_current_user_admin() %}
     <form method="post">
-      {{ xsrf_form_html() }}
+      {% raw xsrf_form_html() %} 
       {% if page %}
         <input type="hidden" name="key" value="{{ page.key() }}"/>
       {% end %}
@@ -27,7 +27,7 @@
         <h4>Headers</h4>
         <textarea name="head">
           {% if page and page.head %}
-            {{ escape(page.head) }}
+            {{ page.head }}
           {% end %}
         </textarea>
       </p>
@@ -36,11 +36,5 @@
       </p>
     </form>
   {% end %}
-  <p>
-    {% if not users.get_current_user() %}
-      <a href="{{ users.create_login_url(request.uri) }}">Log in</a>
-    {% else %}
-      <a href="{{ users.create_logout_url(request.uri) }}">Log out</a>
-    {% end %}
-  </p>
+  {% module RecentlyEditedPages() %}
 {% end %}
